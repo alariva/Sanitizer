@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Waavi\Sanitizer\Sanitizer;
 
-class FormatDateTest extends TestCase
+class DigitTest extends TestCase
 {
     /**
      * @param $data
@@ -19,30 +19,30 @@ class FormatDateTest extends TestCase
     /**
      *  @test
      */
-    public function it_formats_dates()
+    public function it_string_to_digits()
     {
         $data = [
-            'name' => '21/03/1983',
+            'name' => '+08(096)90-123-45q',
         ];
         $rules = [
-            'name' => 'format_date:d/m/Y, Y-m-d',
+            'name' => 'digit',
         ];
         $data = $this->sanitize($data, $rules);
-        $this->assertEquals('1983-03-21', $data['name']);
+        $this->assertEquals('080969012345', $data['name']);
     }
 
     /**
      *  @test
      */
-    public function it_requires_two_arguments()
+    public function it_string_to_digits2()
     {
-        $this->expectException(\InvalidArgumentException::class);
         $data = [
-            'name' => '21/03/1983',
+            'name' => 'Qwe-rty!:)',
         ];
         $rules = [
-            'name' => 'format_date:d/m/Y',
+            'name' => 'digit',
         ];
         $data = $this->sanitize($data, $rules);
+        $this->assertEquals('', $data['name']);
     }
 }

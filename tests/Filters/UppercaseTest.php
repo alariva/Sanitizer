@@ -1,8 +1,9 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Waavi\Sanitizer\Sanitizer;
 
-class UppercaseTest extends PHPUnit_Framework_TestCase
+class UppercaseTest extends TestCase
 {
     /**
      * @param $data
@@ -28,5 +29,20 @@ class UppercaseTest extends PHPUnit_Framework_TestCase
         ];
         $data = $this->sanitize($data, $rules);
         $this->assertEquals('HELLO EVERYBODY', $data['name']);
+    }
+
+    /**
+     *  @test
+     */
+    public function it_uppercases_special_characters_strings()
+    {
+        $data = [
+            'name' => 'Τάχιστη αλώπηξ',
+        ];
+        $rules = [
+            'name' => 'uppercase',
+        ];
+        $data = $this->sanitize($data, $rules);
+        $this->assertEquals('ΤΆΧΙΣΤΗ ΑΛΏΠΗΞ', $data['name']);
     }
 }

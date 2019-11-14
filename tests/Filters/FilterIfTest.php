@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Waavi\Sanitizer\Sanitizer;
 
-class FormatDateTest extends TestCase
+class FilterIfTest extends TestCase
 {
     /**
      * @param $data
@@ -19,30 +19,30 @@ class FormatDateTest extends TestCase
     /**
      *  @test
      */
-    public function it_formats_dates()
+    public function it_apply_filter_if_match()
     {
         $data = [
-            'name' => '21/03/1983',
+            'name' => 'HellO EverYboDy',
         ];
         $rules = [
-            'name' => 'format_date:d/m/Y, Y-m-d',
+            'name' => 'uppercase|filter_if:name,HellO EverYboDy',
         ];
         $data = $this->sanitize($data, $rules);
-        $this->assertEquals('1983-03-21', $data['name']);
+        $this->assertEquals('HELLO EVERYBODY', $data['name']);
     }
 
     /**
      *  @test
      */
-    public function it_requires_two_arguments()
+    public function it_does_not_apply_filter_if_no_match()
     {
-        $this->expectException(\InvalidArgumentException::class);
         $data = [
-            'name' => '21/03/1983',
+            'name' => 'HellO EverYboDy',
         ];
         $rules = [
-            'name' => 'format_date:d/m/Y',
+            'name' => 'uppercase|filter_if:name,no match',
         ];
         $data = $this->sanitize($data, $rules);
+        $this->assertEquals('HellO EverYboDy', $data['name']);
     }
 }

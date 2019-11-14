@@ -2,10 +2,10 @@
 
 namespace DummyNamespace;
 
-use App\Http\Requests\Request;
+use Illuminate\Foundation\Http\FormRequest;
 use Waavi\Sanitizer\Laravel\SanitizesInput;
 
-class DummyClass extends Request
+class DummyClass extends FormRequest
 {
     use SanitizesInput;
 
@@ -22,7 +22,7 @@ class DummyClass extends Request
     /**
      *  Validation rules to be applied to the input.
      *
-     *  @return void
+     *  @return array
      */
     public function rules()
     {
@@ -32,7 +32,7 @@ class DummyClass extends Request
     /**
      *  Filters to be applied to the input.
      *
-     *  @return void
+     *  @return array
      */
     public function filters()
     {

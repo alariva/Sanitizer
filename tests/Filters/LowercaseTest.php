@@ -1,8 +1,9 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Waavi\Sanitizer\Sanitizer;
 
-class LowercaseTest extends PHPUnit_Framework_TestCase
+class LowercaseTest extends TestCase
 {
     /**
      * @param $data
@@ -28,5 +29,20 @@ class LowercaseTest extends PHPUnit_Framework_TestCase
         ];
         $data = $this->sanitize($data, $rules);
         $this->assertEquals('hello everybody', $data['name']);
+    }
+
+    /**
+     *  @test
+     */
+    public function it_lowercases_special_characters_strings()
+    {
+        $data = [
+            'name' => 'Τάχιστη αλώπηξ',
+        ];
+        $rules = [
+            'name' => 'lowercase',
+        ];
+        $data = $this->sanitize($data, $rules);
+        $this->assertEquals('τάχιστη αλώπηξ', $data['name']);
     }
 }

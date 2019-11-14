@@ -1,8 +1,9 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Waavi\Sanitizer\Sanitizer;
 
-class CapitalizeTest extends PHPUnit_Framework_TestCase
+class CapitalizeTest extends TestCase
 {
     /**
      * @param $data
@@ -22,5 +23,14 @@ class CapitalizeTest extends PHPUnit_Framework_TestCase
     {
         $result = $this->sanitize(['name' => ' jon snow 145'], ['name' => 'capitalize']);
         $this->assertEquals(' Jon Snow 145', $result['name']);
+    }
+
+    /**
+     *  @test
+     */
+    public function it_capitalizes_special_characters()
+    {
+        $result = $this->sanitize(['name' => 'Τάχιστη αλώπηξ'], ['name' => 'capitalize']);
+        $this->assertEquals('Τάχιστη Αλώπηξ', $result['name']);
     }
 }

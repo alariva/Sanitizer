@@ -4,16 +4,16 @@ namespace Waavi\Sanitizer\Filters;
 
 use Waavi\Sanitizer\Contracts\Filter;
 
-class Uppercase implements Filter
+class Digit implements Filter
 {
     /**
-     *  Lowercase the given string.
+     *  Get only digit characters from the string.
      *
      *  @param  string  $value
      *  @return string
      */
     public function apply($value, $options = [])
     {
-        return is_string($value) ? mb_strtoupper($value) : $value;
+        return preg_replace('/[^0-9]/si', '', $value);
     }
 }

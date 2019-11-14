@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/waavi/sanitizer.svg?style=flat-square)](https://packagist.org/packages/waavi/sanitizer)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/alariva/sanitizer/master.svg?style=flat-square)](https://travis-ci.org/alariva/sanitizer)
+[![Build Status](https://img.shields.io/travis/waavi/sanitizer/master.svg?style=flat-square)](https://travis-ci.org/waavi/sanitizer)
 [![Total Downloads](https://img.shields.io/packagist/dt/waavi/sanitizer.svg?style=flat-square)](https://packagist.org/packages/waavi/sanitizer)
 
 ## About WAAVI
@@ -26,6 +26,10 @@ Given a data array with the following format:
         'email'         =>  '  JOHn@DoE.com',
         'birthdate'     =>  '06/25/1980',
         'jsonVar'       =>  '{"name":"value"}',
+        'description'   =>  '<p>Test paragraph.</p><!-- Comment --> <a href="#fragment">Other text</a>',
+        'phone'         =>  '+08(096)90-123-45q',
+        'country'       =>  'GB',
+        'postcode'      =>  'ab12 3de',
     ];
 ```
 We can easily format it using our Sanitizer and the some of Sanitizer's default filters:
@@ -38,6 +42,10 @@ We can easily format it using our Sanitizer and the some of Sanitizer's default 
         'email'         =>  'trim|escape|lowercase',
         'birthdate'     =>  'trim|format_date:m/d/Y, Y-m-d',
         'jsonVar'       =>  'cast:array',
+        'description'   =>  'strip_tags',
+        'phone'         =>  'digit',
+        'country'       =>  'trim|escape|capitalize',
+        'postcode'      =>  'trim|escape|uppercase|filter_if:country,GB',
     ];
 
     $sanitizer  = new Sanitizer($data, $filters);
@@ -52,6 +60,10 @@ Which will yield:
         'email'         =>  'john@doe.com',
         'birthdate'     =>  '1980-06-25',
         'jsonVar'       =>  '["name" => "value"]',
+        'description'   =>  'Test paragraph. Other text',
+        'phone'         =>  '080969012345',
+        'country'       =>  'GB',
+        'postcode'      =>  'AB12 3DE',
     ];
 ```
 It's usage is very similar to Laravel's Validator module, for those who are already familiar with it, although Laravel is not required to use this library.
@@ -70,13 +82,16 @@ The following filters are available out of the box:
  **uppercase**    | Converts the given string to all uppercase
  **capitalize**    | Capitalize a string
  **cast**           | Casts a variable into the given type. Options are: integer, float, string, boolean, object, array and Laravel Collection.
- **date_format**    | Always takes two arguments, the date's given format and the target format, following DateTime notation.
+ **format_date**    | Always takes two arguments, the date's given format and the target format, following DateTime notation.
+ **strip_tags**    | Strip HTML and PHP tags using php's strip_tags
+ **digit**    | Get only digit characters from the string
+ **filter_if** | Applies filters if an attribute exactly matches value
 
 ## Adding custom filters
 
 You can add your own filters by passing a custom filter array to the Sanitize constructor as the third parameter. For each filter name, either a closure or a full classpath to a Class implementing the Waavi\Sanitizer\Contracts\Filter interface must be provided. Closures must always accept two parameters: $value and an $options array:
 ```php
-    class NoOddNumbersFilter implements Waavi\Sanitizer\Contracts\Filter
+    class RemoveStringsFilter implements Waavi\Sanitizer\Contracts\Filter
     {
         public function apply($value, $options = [])
         {
